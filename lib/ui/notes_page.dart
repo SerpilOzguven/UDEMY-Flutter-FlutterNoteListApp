@@ -12,7 +12,7 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Not Sayfasý'),
+        title: Text('Not Sayfasi'),
       ),
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_note_list/ui/notes_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,11 +26,14 @@ class _HomePageState extends State<HomePage> {
       ),
       body: ListView.builder(itemCount: 4, itemBuilder: (context,index){
         return  GestureDetector(
-          onTap: () {},
-          child: ListTile(
-            title: Text('Ev Eþyalarý', style: TextStyle(fontSize: 18),),
-            leading: const FaIcon(FontAwesomeIcons.penToSquare,size: 22,),
-            trailing: const FaIcon(FontAwesomeIcons.trashCan,size: 22,),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => NotesPage());
+          },
+          child: const ListTile(
+            title: Text('Ev Esyalari', style: TextStyle(fontSize: 18),),
+            leading: FaIcon(FontAwesomeIcons.penToSquare,size: 22,),
+            trailing: FaIcon(FontAwesomeIcons.trashCan,size: 22,),
           ),
         );
       }),
