@@ -14,6 +14,12 @@ class NoteModel{
         date: json['date'],
 
       );
+  toJson()=>{
+    'id'= id,
+    'note'= note,
+    'completed'= completed,
+    'date'= date
+  };
 
 
 }
