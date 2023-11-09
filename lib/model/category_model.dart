@@ -3,17 +3,18 @@ class CategoryModel{
   String? category;
 
 
-  NoteModel({this.id,this.category});
+  CategoryModel({this.id,this.category});
 
-  factory NoteModel.fromjson(Map<String, dynamic>json)=>
-      NoteModel(
+  factory CategoryModel.fromjson(Map<String, dynamic>json)=>
+      CategoryModel(
         id: json['id'],
         category: json['category'],
 
       );
   toJson()=>{
-    'id'= id,
-    'category'= category,
-
+   'id' = id,
+    'category' = category
   };
+
+
 }
