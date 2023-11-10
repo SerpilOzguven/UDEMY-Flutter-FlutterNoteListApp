@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Note List',
       theme: ThemeData(
-        fontFamily: GoogleFonts.poppins().fontFamily,
+        fontFamily: GoogleFonts.roboto().fontFamily,
         primarySwatch: Colors.blue,
       ),
       home: const HomePage(),

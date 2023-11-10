@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_note_list/model/category_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -32,5 +33,21 @@ class DatabaseHelper {
       await File(path).writeAsBytes(bytes, flush: true);
     }
     return await openDatabase(path);
+  }
+  Future<List<CategoryModel>?> getCategories()async{
+    try{
+      var db = await instance.database;
+      var templist = <CategoryModel>[];
+      var categories = await db.query('categories');
+      for(var item in categories){
+      templist.add(CategoryModel.fromjson(item));
+      }
+      return templist;
+      }catch(e){
+        print('get categories $e');
+        return null;
+
+      }
+
   }
 }
