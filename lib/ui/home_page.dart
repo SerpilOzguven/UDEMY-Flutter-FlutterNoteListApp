@@ -14,6 +14,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  TextEditingController controller = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -29,7 +33,8 @@ class _HomePageState extends State<HomePage> {
           size: 26,
         ),
       ),
-      body: FutureBuilder<List<CategoryModel>?>(future: DatabaseHelper.instance.getCategories(),
+      body: FutureBuilder<List<CategoryModel>?>(
+          future: DatabaseHelper.instance.getCategories(),
           builder:(context,snapshot) {
             if (!snapshot.hasData) {
               return const Center(
@@ -42,7 +47,7 @@ class _HomePageState extends State<HomePage> {
                 );
               } else {
                 return ListView.builder(
-                    itemCount: 4,
+                    itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                     CategoryModel category = snapshot.data![index];
                     return GestureDetector(
@@ -53,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                     child: ListTile(
                       title:   Text(
                         category.category!,
-                        style: TextStyle(fontSize: 18),),
+                        style: const TextStyle(fontSize: 18),),
                       leading: GestureDetector(onTap: () {
                         dialog(false);
                       }, child: const FaIcon(FontAwesomeIcons.penToSquare,
@@ -107,19 +112,38 @@ class _HomePageState extends State<HomePage> {
                 ],
               ));
     } else {
-      return showDialog(context: context,
-          builder: (context) =>
-              AlertDialog(
-                title : const Text('Kategori Giriniz'),
-                content: TextFormField(decoration: const InputDecoration(border: OutlineInputBorder()),),
+      return showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+            title : const Text('Kategori Giriniz'),
+            content: TextFormField(
+              decoration: const InputDecoration(
+                hintText: 'Kategori',border: OutlineInputBorder()),
+              controller: controller ,
+            ),
 
-                actions: [
-                  ElevatedButton(onPressed: () {}, child: const Text('Ekle'),),
-                  ElevatedButton(onPressed: () {
+            actions: [
+              ElevatedButton(
+                onPressed: ()async {
+                  CategoryModel category =
+                  CategoryModel(category: controller.text);
+                Navigator.of(context).pop();
+                var result =
+                  await DatabaseHelper.instance.addCategories(category);
+                if(result!){
+                  setState(() {
+                    controller.clear();
+                  });
+                }
+              },
+                child: const Text('Ekle'),
+              ),
+              ElevatedButton(onPressed: () {
                     back();
+                    controller.clear();
                   },
-                    child: const FaIcon(FontAwesomeIcons.trashCan,
-                      size: 22,),
+                    child: const Text('Vazgec'),
                   ),
                 ],
               ));
