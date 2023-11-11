@@ -16,6 +16,7 @@ class NotesPage extends StatefulWidget {
 class _NotesPageState extends State<NotesPage> {
 
   var liste = [0xfff28c8f, 0xfff2b8a4, 0xff558fa7, 0xff2d6073];
+  TextEditingController controller = TextEditingController();
 
 
   @override
@@ -40,15 +41,14 @@ class _NotesPageState extends State<NotesPage> {
 
         ],
       ),
-      body: FutureBuilder<List<NoteModel>>(future: DatabaseHelper.instance.getNote(widget.id) ,builder: (context, snapshot){
-        if(!snapshot.hasData){
-          return const Center(child: CircularProgressIndicator(),);
-
-        }else{
+      body: FutureBuilder<List<NoteModel>?>(future: DatabaseHelper.instance.getNotes(widget.id),
+          builder: (context, snapshot){
+          if(!snapshot.hasData){
+            return const Center(child: CircularProgressIndicator(),);
+          }else{
           if(snapshot.data!.isEmpty){
             return const Center(child: Text('Henuz notumuz yok'),);
-
-        }else{
+          }else{
             return GridView.builder(
               padding:  const EdgeInsets.all(10),
               itemCount: snapshot.data!.length,
@@ -59,7 +59,7 @@ class _NotesPageState extends State<NotesPage> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10),
               itemBuilder: (context,index) {
-                NoteModel oneNote = snapshot.data!.[index];
+                NoteModel oneNote = snapshot.data![index];
               return GestureDetector(
                 onTap: (){
                   showDialog(
@@ -117,10 +117,13 @@ class _NotesPageState extends State<NotesPage> {
             title: TextFormField(
               decoration:
               const InputDecoration(border: OutlineInputBorder()),
+              controller: controller,
             ),
             actions: [
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: ()async{
+
+                  },
                   child: const Text('Kaydet')),
               ElevatedButton(onPressed: () {
                 back();
@@ -152,7 +155,16 @@ class _NotesPageState extends State<NotesPage> {
                 content: TextFormField(decoration: const InputDecoration(border: OutlineInputBorder()),),
 
                 actions: [
-                  ElevatedButton(onPressed: () {}, child: const Text('Ekle'),),
+                  ElevatedButton(onPressed: ()async {
+                    NoteModel note = NoteModel(note: controller.text, date: DateTime.now().toIso8601String(),categoryId: widget.id,completed: false );
+                    var result = await DatabaseHelper.instance.addNote(note);
+                    if(result!){
+                      back();
+                      controller.clear();
+                      setState(() {});
+                    }
+
+                  }, child: const Text('Ekle'),),
                   ElevatedButton(onPressed: () {
                     back();
                   },

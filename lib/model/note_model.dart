@@ -1,8 +1,8 @@
 class NoteModel{
   int? id;
   String? note;
-  bool? completed;
-  DateTime? date;
+  var completed;
+  String? date;
   int? categoryId;
 
   NoteModel({this.id,this.note,this.completed,this.date,this.categoryId});

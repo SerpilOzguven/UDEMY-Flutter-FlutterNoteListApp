@@ -104,4 +104,22 @@ class DatabaseHelper {
     }
   }
 
+  Future<bool?> addNote(NoteModel noteModel)async{
+    try{
+      var db = await instance.database;
+      await db.insert('note', noteModel.toJson());
+      return true;
+
+
+    }catch(e){
+      print('add note hatalý $e');
+      return null;
+    }
+
+
+  }
+
+
+  }
+
 }

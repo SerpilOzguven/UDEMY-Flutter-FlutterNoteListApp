@@ -3,7 +3,7 @@ class CategoryModel{
   String? category;
 
 
-  CategoryModel({this.id,this.category});
+  CategoryModel({this.id,this.category,});
 
   factory CategoryModel.fromjson(Map<String,dynamic>json)=>
     CategoryModel(
