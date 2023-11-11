@@ -1,4 +1,4 @@
-// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.
+// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.
 
 import 'dart:io';
 
@@ -61,15 +61,29 @@ class DatabaseHelper {
     }
   }
 
-  Future<bool?> editCategories(CategoryModel category)async{
+  Future<bool?> editCategory(CategoryModel category)async{
     try{
       var db = await instance.database;
       await db.update('categories', category.toJson(), where: 'id = ?', whereArgs: [category.id]);
       return true;
     }catch(e){
-      print('edit categories hatalý $e');
+      print('edit category hatalý $e');
       return null;
 
+
+    }
+
+  }
+
+  Future<bool?> deleteCategory(id)async{
+    try{
+      var db = await instance.database;
+      await db.delete('categories',where: 'id = ?', whereArgs: [id]);
+
+    }catch(e){
+      print('delete category hatalý $e');
+      return null;
+      
 
     }
 

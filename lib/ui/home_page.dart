@@ -65,6 +65,7 @@ class _HomePageState extends State<HomePage> {
                       }, child: const FaIcon(FontAwesomeIcons.penToSquare,
                         size: 22,)),
                       trailing: GestureDetector(onTap: () {
+                        dialog('delete', category: category);
 
                       }, child: const FaIcon(FontAwesomeIcons.trashCan,
                         size: 22,)),
@@ -92,7 +93,7 @@ class _HomePageState extends State<HomePage> {
               ElevatedButton(
                   onPressed: ()async{
                     CategoryModel categoryModel = CategoryModel(id:category.id,category: controller2.text);
-                    var result = await DatabaseHelper.instance.editCategories(categoryModel);
+                    var result = await DatabaseHelper.instance.editCategory(categoryModel);
                     if(result!){
                       back();
                       controller2.clear();
@@ -111,17 +112,29 @@ class _HomePageState extends State<HomePage> {
             ],
           ));
     } else if (result == 'delete') {
-      return showDialog(context: context,
-          builder: (context) =>
-              AlertDialog(
+      return showDialog(
+          context: context,
+          builder: (context) =>AlertDialog(
                 title: const Text('Emin misiniz?'),
                 actions: [
-                  ElevatedButton(onPressed: () {}, child: const Text('Sil'),),
-                  ElevatedButton(onPressed: () {
+                  ElevatedButton(
+                    onPressed: ()async{
+                      var result = await DatabaseHelper.instance.deleteCategory(category!.id);
+                      if(result!){
+                        back();
+                        setState(() {
+
+                        });
+                      }
+                    },
+                    child: const Text('Sil'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
                     back();
                   },
-                    child: const FaIcon(FontAwesomeIcons.trashCan,
-                      size: 22,),
+                    child:
+                    const Text('Vazgec'),
                   ),
                 ],
               ));
@@ -129,7 +142,7 @@ class _HomePageState extends State<HomePage> {
       return showDialog(
           barrierDismissible: false,
           context: context,
-          builder: (context) => AlertDialog(
+          builder: (context)=>AlertDialog(
             title : const Text('Kategori Giriniz'),
             content: TextFormField(
               decoration: const InputDecoration(
@@ -153,9 +166,10 @@ class _HomePageState extends State<HomePage> {
               },
                 child: const Text('Ekle'),
               ),
-              ElevatedButton(onPressed: () {
-                    back();
-                    controller.clear();
+              ElevatedButton(
+                onPressed: () {
+                  back();
+                  controller.clear();
 
                   },
                     child: const Text('Vazgec'),
@@ -168,4 +182,4 @@ class _HomePageState extends State<HomePage> {
   back(){
     Navigator.of(context).pop();
   }
-  }
+}
