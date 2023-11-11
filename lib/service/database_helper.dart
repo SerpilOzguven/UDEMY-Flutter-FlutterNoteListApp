@@ -1,9 +1,10 @@
-// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.
+// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.
 
 import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_note_list/model/category_model.dart';
+import 'package:flutter_note_list/model/note_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -87,6 +88,20 @@ class DatabaseHelper {
 
     }
 
+  }
+  Future<List<NoteModel>?> getNotes(id)async{
+    try{
+      var db = await instance.database;
+      var templist = <NoteModel>[];
+      var notes = await db.query('note', where: 'categoryId = ?', whereArgs: [id]);
+      for(var item in notes ){
+        templist.add(NoteModel.fromjson(item));
+      }
+      return templist;
+    }catch(e){
+      print('get note hatalý $e');
+
+    }
   }
 
 }

@@ -1,11 +1,13 @@
 // TODO Implement this library.import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
-
+import 'package:flutter_note_list/model/note_model.dart';
+import 'package:flutter_note_list/service/database_helper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class NotesPage extends StatefulWidget {
-  const NotesPage({super.key});
+  final id;
+  NotesPage({Key? key,this.id}): super(key: key);
 
   @override
   State<NotesPage> createState() => _NotesPageState();
@@ -38,60 +40,74 @@ class _NotesPageState extends State<NotesPage> {
 
         ],
       ),
-      body: GridView.builder(
-        padding:  const EdgeInsets.all(10),
-          itemCount: 16,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10),
-          itemBuilder: (context,index) {
-            return GestureDetector(
-              onTap: (){
-                showDialog(
+      body: FutureBuilder<List<NoteModel>>(future: DatabaseHelper.instance.getNote(widget.id) ,builder: (context, snapshot){
+        if(!snapshot.hasData){
+          return const Center(child: CircularProgressIndicator(),);
+
+        }else{
+          if(snapshot.data!.isEmpty){
+            return const Center(child: Text('Henuz notumuz yok'),);
+
+        }else{
+            return GridView.builder(
+              padding:  const EdgeInsets.all(10),
+              itemCount: snapshot.data!.length,
+              gridDelegate:
+                const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10),
+              itemBuilder: (context,index) {
+                NoteModel oneNote = snapshot.data!.[index];
+              return GestureDetector(
+                onTap: (){
+                  showDialog(
                     context: context,
                     builder: (context)=>AlertDialog(
-                      actions: [
-                        ElevatedButton(
-                          onPressed: (){
-                            back();
-                            dialog('edit');
-                          },
-                          child: const Text('Guncelle'),
-                        ),
-                        ElevatedButton(
-                          onPressed: (){
-                            back();
-                            dialog('delete');
+                    actions: [
+                      ElevatedButton(
+                        onPressed: (){
+                        back();
+                        dialog('edit');
+                      },
+                      child: const Text('Guncelle'),
+                      ),
+                      ElevatedButton(
+                        onPressed: (){
+                        back();
+                        dialog('delete');
 
-                          },
-                          child: const Text('Sil'),
-                        ),
-                        ElevatedButton(
-                          onPressed: (){
-                            back();
-                          },
-                          child: const Text('Vazgec'),
-                        ),
+                      },
+                      child: const Text('Sil'),
+                      ),
+                      ElevatedButton(
+                        onPressed: (){
+                        back();
+                        },
+                      child: const Text('Vazgec'),
+                      ),
                       ],
                     ));
-              },
-              child: Container(
-                padding:  const EdgeInsets.all(10),
-                color: Color(liste[index % 4]),
-                child:  const Text(
-                  'Evimi supurdum ve sildim',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-              ),
-            );
-          }
-        ),
-      );
+                  },
+                  child: Container(
+                    padding:  const EdgeInsets.all(10),
+                    color: Color(liste[index % 4]),
+                    child:  Text(
+                      oneNote.note!,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    ),
+                  ),
+                );
+              }
+              );
+            }
+        }
+      }),
+    );
   }
   dialog(result) {
     if (result == 'edit') {

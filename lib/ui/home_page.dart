@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                     return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(builder: (
-                          context) => const NotesPage()));
+                          context) => NotesPage(id: snapshot.data![index].id)));
                     },
                     child: ListTile(
                       title:   Text(

@@ -3,8 +3,9 @@ class NoteModel{
   String? note;
   bool? completed;
   DateTime? date;
+  int? categoryId;
 
-  NoteModel({this.id,this.note,this.completed,this.date});
+  NoteModel({this.id,this.note,this.completed,this.date,this.categoryId});
 
   factory NoteModel.fromjson(Map<String,dynamic>json)=>
       NoteModel(
