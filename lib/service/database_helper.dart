@@ -1,4 +1,4 @@
-// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.
+// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.// TODO Implement this library.
 
 import 'dart:io';
 
@@ -51,16 +51,28 @@ class DatabaseHelper {
 
   }
   Future<bool?> addCategories(CategoryModel category)async{
-
     try{
       var db = await instance.database;
       await db.insert('categories', category.toJson());
       return true;
-
-
     }catch(e){
       print(('add categories hatalý $e'));
       return null;
     }
   }
+
+  Future<bool?> editCategories(CategoryModel category)async{
+    try{
+      var db = await instance.database;
+      await db.update('categories', category.toJson(), where: 'id = ?', whereArgs: [category.id]);
+      return true;
+    }catch(e){
+      print('edit categories hatalý $e');
+      return null;
+
+
+    }
+
+  }
+
 }

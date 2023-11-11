@@ -16,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   TextEditingController controller = TextEditingController();
+  TextEditingController controller2 = TextEditingController();
 
 
   @override
@@ -60,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                         category.category!,
                         style: const TextStyle(fontSize: 18),),
                       leading: GestureDetector(onTap: () {
-                        dialog(false);
+                        dialog('edit', category: category);
                       }, child: const FaIcon(FontAwesomeIcons.penToSquare,
                         size: 22,)),
                       trailing: GestureDetector(onTap: () {
@@ -76,18 +77,31 @@ class _HomePageState extends State<HomePage> {
     ) ;
   }
 
-  dialog(result) {
+  dialog(result,{CategoryModel? category}) {
     if (result == 'edit') {
+      controller2.text = category!.category!;
       return showDialog(
           context: context,
           builder: (context) =>AlertDialog(
             title: TextFormField(
               decoration:
               const InputDecoration(border: OutlineInputBorder()),
+              controller: controller2,
             ),
             actions: [
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: ()async{
+                    CategoryModel categoryModel = CategoryModel(id:category.id,category: controller2.text);
+                    var result = await DatabaseHelper.instance.editCategories(categoryModel);
+                    if(result!){
+                      back();
+                      controller2.clear();
+                      setState(() {
+
+                      });
+                    }
+
+                  },
                   child: const Text('Kaydet')),
               ElevatedButton(onPressed: () {
                 back();
@@ -125,7 +139,7 @@ class _HomePageState extends State<HomePage> {
 
             actions: [
               ElevatedButton(
-                onPressed: ()async {
+                onPressed: ()async{
                   CategoryModel category =
                   CategoryModel(category: controller.text);
                 Navigator.of(context).pop();
@@ -142,6 +156,7 @@ class _HomePageState extends State<HomePage> {
               ElevatedButton(onPressed: () {
                     back();
                     controller.clear();
+
                   },
                     child: const Text('Vazgec'),
                   ),
