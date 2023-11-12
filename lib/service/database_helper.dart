@@ -148,4 +148,17 @@ class DatabaseHelper {
     }
 
   }
+
+  Future deleteNote(id)async{
+    try{
+      var db = await instance.database;
+      await db.delete('note', where:'id = ?',whereArgs:[id] );
+      return true;
+
+
+    }catch(e){
+      print('delete note hatali $e');
+      return null;
+    }
+  }
 }

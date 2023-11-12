@@ -25,119 +25,125 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  const Text('Not Sayfasi', style:TextStyle(color: Colors.black),),
-        backgroundColor:Colors.white,
-        elevation: 0,
-        iconTheme:  const IconThemeData(color: Colors.black),
-        actions: [    Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: IconButton(
-              onPressed: () {
-                dialog('add');
-              },
-              icon: FaIcon(
-                FontAwesomeIcons.plus,
-                color: Colors.red.shade500,
-              )),
+        title: const Text(
+          'Not Sayfasý',
+          style: TextStyle(color: Colors.black, fontSize: 22),
         ),
-
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+                onPressed: () {
+                  dialog('add');
+                },
+                icon: FaIcon(
+                  FontAwesomeIcons.plus,
+                  color: Colors.red.shade500,
+                )),
+          ),
         ],
       ),
-      body: FutureBuilder<List<NoteModel>?>(future: DatabaseHelper.instance.getNotes(widget.id),
-          builder: (context, snapshot){
-          if(!snapshot.hasData){
-            return const Center(child: CircularProgressIndicator(),);
-          }else {
-            if (snapshot.data!.isEmpty) {
-              return const Center(child: Text('Henuz notumuz yok'),);
+      body: FutureBuilder<List<NoteModel>?>(
+          future: DatabaseHelper.instance.getNotes(widget.id),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             } else {
-              return GridView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemCount: snapshot.data!.length,
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10),
-                  itemBuilder: (context, index) {
-                    NoteModel oneNote = snapshot.data![index];
-                    return GestureDetector(
-                      onTap: () {
-                        showDialog(
+              if (snapshot.data!.isEmpty) {
+                return const Center(
+                  child: Text('Henüz notumuz yok'),
+                );
+              } else {
+                return GridView.builder(
+                    padding: const EdgeInsets.all(10),
+                    itemCount: snapshot.data!.length,
+                    gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20),
+                    itemBuilder: (context, index) {
+                      NoteModel oneNote = snapshot.data![index];
+                      return GestureDetector(
+                        onTap: () {
+                          showDialog(
                             context: context,
-                            builder: (context) =>
-                                AlertDialog(
-                                  actions: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        back();
-                                        dialog('edit', oneNote: oneNote);
-                                      },
-                                      child: const Text('Guncelle'),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        back();
-                                        dialog('delete');
-                                      },
-                                      child: const Text('Sil'),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        back();
-                                      },
-                                      child: const Text('Vazgec'),
-                                    ),
-                                  ],
-                                ));
-                      },
-                      onDoubleTap: () {
-                        DatabaseHelper.instance.changeCompleted(
-                            oneNote.id, oneNote.completed);
-                        setState(() {
+                            builder: (context) => AlertDialog(
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    back();
+                                    dialog('edit', oneNote: oneNote);
+                                  },
+                                  child: const Text('Güncelle'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    back();
+                                  },
+                                  child: const Text('Vazgeç'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        onDoubleTap: () {
+                          DatabaseHelper.instance
+                              .changeCompleted(oneNote.id, oneNote.completed);
+                          setState(() {});
+                        },
+                        onLongPress: ()async{
+                          var result = await DatabaseHelper.instance.deleteNote(oneNote.id);
+                          if(result){
+                            setState(() {
 
-                        });
-                      },
-                      child: Column(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width,
-                                padding: const EdgeInsets.all(10),
-                                color: oneNote.completed == 0 ? Color(
-                                    liste[index % 4]) : Colors.grey.shade700,
-                                child: Text(
-                                  oneNote.note!,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
+                            });
+                          }
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                          color: oneNote.completed == 1
+                              ? Color(liste[index % 4])
+                              : Colors.grey.shade700,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    oneNote.note!,
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Align(
+                              Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
                                   DateFormat.Hm()
-                                    .format(DateTime.parse(oneNote.date!)),
+                                      .format(DateTime.parse(oneNote.date!)),
                                   style:
                                   const TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                                ),
                               ),
-                              ),
-                            )],
-                      ),
-                    );
-                  });
+                            ],
+                          ),
+                        ),
+                      );
+                    });
+              }
             }
-          }
-      }),
+          }),
     );
   }
 
@@ -149,82 +155,77 @@ class _NotesPageState extends State<NotesPage> {
       isCompleted = oneNote.completed;
       return showDialog(
           context: context,
-          builder: (context) =>AlertDialog(
+          builder: (context) => AlertDialog(
             title: TextFormField(
-              decoration: const InputDecoration(border: OutlineInputBorder()),
+              decoration:
+              const InputDecoration(border: OutlineInputBorder()),
               controller: controller2,
             ),
             actions: [
               ElevatedButton(
-                  onPressed: ()async{
-                    NoteModel noteModel = NoteModel(categoryId: widget.id, note: controller2.text,date: DateTime.now().toIso8601String(),id: oneNote.id);
-                    var sonuc = await DatabaseHelper.instance.editNote(noteModel);
-                    if(sonuc!){
-                      setState(() {
-                        controller2.clear();
-                        back();
-                      });
-                    }
-
-                  },
-                  child: const Text('Kaydet')),
-              ElevatedButton(onPressed: () {
-                back();
-              },
-                child: const Text('delete'),
+                onPressed: () async {
+                  NoteModel noteModel = NoteModel(
+                      categoryId: widget.id,
+                      note: controller2.text,
+                      date: DateTime.now().toIso8601String(),
+                      id: oneNote.id);
+                  var sonuc =
+                  await DatabaseHelper.instance.editNote(noteModel);
+                  if (sonuc!) {
+                    setState(() {});
+                    controller2.clear();
+                    back();
+                  }
+                },
+                child: const Text('Kaydet'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  back();
+                },
+                child: const Text('Vazgeç'),
               ),
             ],
           ));
-    } else if (result == 'delete') {
-      return showDialog(context: context,
-          builder: (context) =>
-              AlertDialog(
-                title: const Text('Emin misiniz?'),
-                actions: [
-                  ElevatedButton(onPressed: () {}, child: const Text('Sil'),),
-                  ElevatedButton(onPressed: () {
+    }  else {
+      return showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Not Giriniz'),
+            content: TextFormField(
+              decoration:
+              const InputDecoration(border: OutlineInputBorder()),
+              controller: controller,
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () async {
+                  NoteModel note = NoteModel(
+                      note: controller.text,
+                      date: DateTime.now().toIso8601String(),
+                      categoryId: widget.id,
+                      completed: 0);
+                  var result = await DatabaseHelper.instance.addNote(note);
+                  if (result!) {
                     back();
-                  },
-                    child: const FaIcon(FontAwesomeIcons.trashCan,
-                      size: 22,),
-                  ),
-                ],
-              ));
-    } else {
-      return showDialog(context: context,
-          builder: (context) =>
-              AlertDialog(
-                title : const Text('Kategori Giriniz'),
-                content: TextFormField(decoration: const InputDecoration(border: OutlineInputBorder()),),
-
-                actions: [
-                  ElevatedButton(onPressed: ()async {
-                    NoteModel note =
-                      NoteModel(note: controller.text,
-                        date: DateTime.now().toIso8601String(),
-                        categoryId: widget.id,
-                        completed: 0
-                        );
-                    var result = await DatabaseHelper.instance.addNote(note);
-                    if(result!){
-                      back();
-                      controller.clear();
-                      setState(() {});
-                    }
-
-                  }, child: const Text('Ekle'),),
-                  ElevatedButton(onPressed: () {
-                    back();
-                  },
-                    child: const FaIcon(FontAwesomeIcons.trashCan,
-                      size: 22,),
-                  ),
-                ],
-              ));
+                    controller.clear();
+                    setState(() {});
+                  }
+                },
+                child: const Text('Ekle'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  back();
+                },
+                child: const Text('Vazgeç'),
+              ),
+            ],
+          ));
     }
-
   }
-  back(){
+
+  back() {
     Navigator.of(context).pop();
   }
 }
