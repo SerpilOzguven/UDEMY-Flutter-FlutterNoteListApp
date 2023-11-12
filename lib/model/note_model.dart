@@ -24,5 +24,11 @@ class NoteModel{
     'categoryId': categoryId
   };
 
+  toJsonCompletedNot()=>{
+    'id': id,
+    'note': note,
+    'date': date,
+    'categoryId': categoryId
+  };
 
 }

@@ -118,8 +118,34 @@ class DatabaseHelper {
 
 
   }
+  Future<bool?> editNote(NoteModel noteModel)async{
+    try{
+      var db = await instance.database;
+      await db.update('note', noteModel.toJsonCompletedNot(), where: 'id = ?', whereArgs: [noteModel.id]);
+      return true;
 
+    }catch(e){
+      print('update note $e');
+      return null;
+
+    }
+  }
+  Future changeCompleted(id, deger)async{
+    if(deger == 0){
+      deger == 1;
+    }else{
+      deger = 0;
+    }
+    try{
+      var db = await instance.database;
+      await db.update('note', {'completed': deger}, where: 'id = ?', whereArgs: [id]);
+      return true;
+
+    }catch(e){
+      print('update note $e');
+      return null;
+
+    }
 
   }
-
 }
